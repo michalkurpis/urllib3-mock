@@ -120,6 +120,7 @@ class Responses(object):
             'return': (status, adding_headers, body),
             'content_type': content_type,
             'match_querystring': match_querystring,
+            'matched': False
         })
 
     def add_callback(self, method, url, callback, match_querystring=False,
@@ -150,10 +151,17 @@ class Responses(object):
         return get_wrapped(func, _wrapper_template, evaldict)
 
     def _find_match(self, request):
-        for match in self._urls:
-            if request.method == match['method'] and \
-               self._has_url_match(match, request.url):
-                return match
+        matched = None
+        for index in range(0, len(self._urls)):
+            if request.method == self._urls[index]['method'] and \
+               self._has_url_match(self._urls[index], request.url):
+                matched = self._urls[index]
+                if matched.matched == False:
+                    self._urls[index].matched = True
+                    return matched
+                    
+        return matched
+                
 
     def _has_url_match(self, match, request_url):
         url = match['url']
