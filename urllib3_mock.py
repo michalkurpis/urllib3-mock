@@ -156,8 +156,8 @@ class Responses(object):
             if request.method == self._urls[index]['method'] and \
                self._has_url_match(self._urls[index], request.url):
                 matched = self._urls[index]
-                if matched.matched == False:
-                    self._urls[index].matched = True
+                if matched['matched'] == False:
+                    self._urls[index]['matched'] = True
                     return matched
                     
         return matched
